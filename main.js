@@ -4,6 +4,7 @@
 // Global constants
 var g_WIDTH;
 var g_HEIGHT;
+var g_NEWS_COUNT = 4;
 
 //------------------------------------------------------------------------------
 // Global variables
@@ -61,8 +62,11 @@ function update()
 // GPE constructor
 var gpe = function(id)
 {
+	// Random news
+	var newsIndex = Math.floor(Math.random() * g_NEWS_COUNT);
+	
 	// Clone source
-	var src = document.getElementById("news_1");
+	var src = document.getElementById("news_" + newsIndex);
 	this.div = src.cloneNode(true);
 	this.div.id = "gpe_" + id;
 
