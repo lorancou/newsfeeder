@@ -13,6 +13,51 @@ var g_gpeArray;
 var g_gpeCount;
 
 //------------------------------------------------------------------------------
+// Main
+function main()
+{
+	// Init global "constants"
+	g_WIDTH = document.body.clientWidth;
+	g_HEIGHT = document.body.clientHeight;
+	
+	// Init global variables
+	g_time = 0.0;
+	g_tick = 0;
+	g_gpeArray = new Array();
+	g_gpeCount = 0;
+	
+	var dude = document.getElementById("dude");
+	dude.style.left = ((g_WIDTH-dude.clientWidth)/2) + "px";
+	dude.style.top = (g_HEIGHT-dude.clientHeight-20) + "px";
+	
+    // Run
+    update();
+}
+
+//------------------------------------------------------------------------------
+// Loop
+function update()
+{
+	// Plan next update
+	var FPS = 60.0;
+	var DT = 1000.0 / FPS;
+	setTimeout("update()", DT);
+	++g_tick;
+	
+	// A new GPE every 2 sec
+	if (g_tick % (2 * FPS) == 0)
+	{
+		g_gpeArray.push(new gpe(g_gpeCount++));
+	}
+
+	// Update GPEs
+	for (var i=0; i<g_gpeArray.length; ++i)
+	{
+		g_gpeArray[i].update(DT);
+	}
+}
+
+//------------------------------------------------------------------------------
 // GPE constructor
 var gpe = function(id)
 {
@@ -63,44 +108,3 @@ gpe.prototype.update = function(dt)
 	this.div.style.left = this.pos + "px";
 	this.div.style.top = "20px";		
 }
-
-//------------------------------------------------------------------------------
-// Main
-function main()
-{
-	// Init global "constants"
-	g_WIDTH = document.body.clientWidth;
-	g_HEIGHT = document.body.clientHeight;
-	
-	// Init global variables
-	g_time = 0.0;
-	g_tick = 0;
-	g_gpeArray = new Array();
-	g_gpeCount = 0;
-	
-    // Run
-    update();
-}
-
-//------------------------------------------------------------------------------
-// Loop
-function update()
-{
-	// Plan next update
-	var FPS = 60.0;
-	var DT = 1000.0 / FPS;
-	setTimeout("update()", DT);
-	++g_tick;
-	
-	if (g_tick % 120 == 0)
-	{
-		g_gpeArray.push(new gpe(g_gpeCount++));
-	}
-
-	// Update GPEs
-	for (var i=0; i<g_gpeArray.length; ++i)
-	{
-		g_gpeArray[i].update(DT);
-	}
-}
-

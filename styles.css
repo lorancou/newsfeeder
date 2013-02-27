@@ -1,8 +1,12 @@
-div.news {
+.news {
 	position: absolute;
 	left: 0px;
 	top: 0px;
 	width: 400px;
 	font-size: 12px;
 	visibility: hidden;
+}
+
+#dude {
+	position: absolute;
 }
