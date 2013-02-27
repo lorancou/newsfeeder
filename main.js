@@ -56,6 +56,18 @@ function update()
 	{
 		g_gpeArray[i].update(DT);
 	}
+	
+
+	// Remove GPEs that went out of bound
+    var i = g_gpeArray.length;
+    while (i--)
+	{
+        if (g_gpeArray[i].posX > g_WIDTH + 200 ||
+			g_gpeArray[i].posY > g_HEIGHT)
+        {
+            g_gpeArray.splice(i, 1);
+        }
+    }	
 }
 
 //------------------------------------------------------------------------------
@@ -79,13 +91,19 @@ var gpe = function(id)
 	this.div.style.MozTransformOrigin = "0% 50%";
 	this.div.style.OTransformOrigin = "0% 50%";
 	this.div.style.msTransformOrigin = "0% 50%";
+	
+	// Drop on hover
+	this.hanging = true;
+	this.div.that = this;
+	this.div.onmouseover = function() { this.that.hanging = false; };
 
 	// Add to document
 	document.body.appendChild(this.div);
 
 	// Init variables
 	this.timer = 0.0;
-	this.pos = -50;	
+	this.posX = -50;
+	this.posY = 70;
 }
 
 //------------------------------------------------------------------------------
@@ -94,21 +112,37 @@ gpe.prototype.update = function(dt)
 {
 	this.timer += dt;
 	
-	// Rotate
-	var angle = 90 + Math.sin(this.timer * 0.005) * 20;
+	if (this.hanging === true)
+	{
+		// Rotate
+		var angle = 90 + Math.sin(this.timer * 0.005) * 20;
 
-	// Update orientation
-	var style = "rotate(" + Math.floor(angle) + "deg)";
-	this.div.style.transform = style;
-	this.div.style.WebkitTransform = style + " translateZ(0)"; // Force HW Acceleration
-	this.div.style.MozTransform = style;
-	this.div.style.OTransform = style;
-	this.div.style.msTransform = style;
-	
-	// Move
-	this.pos += 1;
+		// Update orientation
+		var style = "rotate(" + Math.floor(angle) + "deg)";
+		this.div.style.transform = style;
+		this.div.style.WebkitTransform = style + " translateZ(0)"; // Force HW Acceleration
+		this.div.style.MozTransform = style;
+		this.div.style.OTransform = style;
+		this.div.style.msTransform = style;
+		
+		// Move
+		this.posX += 1;
+	}
+	else
+	{
+		// Drop
+		this.posY += 10;
+	}
 
 	// Update position
-	this.div.style.left = this.pos + "px";
-	this.div.style.top = "80px";		
+	this.div.style.left = this.posX + "px";
+	this.div.style.top = this.posY + "px";		
+}
+
+//------------------------------------------------------------------------------
+// GPE drop
+gpe.prototype.drop = function(that)
+{
+	this.hanging = false;
+	console.log("drop");
 }
