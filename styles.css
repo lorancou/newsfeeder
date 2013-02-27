@@ -1,6 +1,8 @@
-div.gpe {
+div.news {
 	position: absolute;
 	left: 0px;
 	top: 0px;
-	width: 512px;
+	width: 400px;
+	font-size: 12px;
+	visibility: hidden;
 }
