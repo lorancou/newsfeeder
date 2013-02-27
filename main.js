@@ -12,6 +12,8 @@ var g_time;
 var g_tick;
 var g_gpeArray;
 var g_gpeCount;
+var g_dude;
+var g_finished;
 
 //------------------------------------------------------------------------------
 // Main
@@ -26,10 +28,8 @@ function main()
 	g_tick = 0;
 	g_gpeArray = new Array();
 	g_gpeCount = 0;
-	
-	var dude = document.getElementById("dude");
-	dude.style.left = ((g_WIDTH-dude.clientWidth)/2) + "px";
-	dude.style.top = (g_HEIGHT-dude.clientHeight-20) + "px";
+	g_dude = new dude();
+	g_finished = false;
 	
     // Run
     update();
@@ -46,27 +46,47 @@ function update()
 	++g_tick;
 	
 	// A new GPE every 2 sec
-	if (g_tick % (2 * FPS) == 0)
+	if (g_finished === false)
 	{
-		g_gpeArray.push(new gpe(g_gpeCount++));
+		if (g_tick % (2 * FPS) == 0)
+		{
+			g_gpeArray.push(new gpe(g_gpeCount++));
+		}
 	}
 
 	// Update GPEs
 	for (var i=0; i<g_gpeArray.length; ++i)
 	{
 		g_gpeArray[i].update(DT);
-	}
-	
+	}	
 
 	// Remove GPEs that went out of bound
     var i = g_gpeArray.length;
     while (i--)
 	{
-        if (g_gpeArray[i].posX > g_WIDTH + 200 ||
+		var removeIt = false;
+		
+        if (g_gpeArray[i].posX > (g_WIDTH/2)-100 &&
+			g_gpeArray[i].posX < (g_WIDTH/2)+100 &&
+			g_gpeArray[i].posY > g_HEIGHT - 400)
+        {
+			if (!g_dude.eat(g_gpeArray[i].id))
+			{
+				g_finished = true;
+			}
+			removeIt = true;
+		}
+        else if (g_gpeArray[i].posX > g_WIDTH + 200 ||
 			g_gpeArray[i].posY > g_HEIGHT)
         {
-            g_gpeArray.splice(i, 1);
+			removeIt = true;
         }
+		
+		if (removeIt)
+		{
+			g_gpeArray[i].div.parentNode.removeChild(g_gpeArray[i].div);
+			g_gpeArray.splice(i, 1);
+		}
     }	
 }
 
@@ -112,7 +132,7 @@ gpe.prototype.update = function(dt)
 {
 	this.timer += dt;
 	
-	if (this.hanging === true)
+	if (this.hanging === true && g_finished === false)
 	{
 		// Rotate
 		var angle = 90 + Math.sin(this.timer * 0.005) * 20;
@@ -140,9 +160,19 @@ gpe.prototype.update = function(dt)
 }
 
 //------------------------------------------------------------------------------
-// GPE drop
-gpe.prototype.drop = function(that)
+// Dude constructor
+var dude = function()
 {
-	this.hanging = false;
-	console.log("drop");
+	// Place it
+	this.img = document.getElementById("dude");
+	this.img.style.left = ((g_WIDTH-this.img.clientWidth)/2) + "px";
+	this.img.style.top = (g_HEIGHT-this.img.clientHeight-20) + "px";
+}
+
+//------------------------------------------------------------------------------
+// Dude eat
+dude.prototype.eat = function(id)
+{
+	this.img.src = "dude_fail.png";
+	return false;
 }
