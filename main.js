@@ -66,11 +66,12 @@ function update()
 	{
 		var removeIt = false;
 		
-        if (g_gpeArray[i].posX > (g_WIDTH/2)-100 &&
+        if (g_finished === false &&
+			g_gpeArray[i].posX > (g_WIDTH/2)-100 &&
 			g_gpeArray[i].posX < (g_WIDTH/2)+100 &&
 			g_gpeArray[i].posY > g_HEIGHT - 400)
         {
-			if (!g_dude.eat(g_gpeArray[i].id))
+			if (!g_dude.eat(g_gpeArray[i].newsId))
 			{
 				g_finished = true;
 			}
@@ -95,10 +96,10 @@ function update()
 var gpe = function(id)
 {
 	// Random news
-	var newsIndex = Math.floor(Math.random() * g_NEWS_COUNT);
+	this.newsId = Math.floor(Math.random() * g_NEWS_COUNT);
 	
 	// Clone source
-	var src = document.getElementById("news_" + newsIndex);
+	var src = document.getElementById("news_" + this.newsId);
 	this.div = src.cloneNode(true);
 	this.div.id = "gpe_" + id;
 
@@ -167,12 +168,44 @@ var dude = function()
 	this.img = document.getElementById("dude");
 	this.img.style.left = ((g_WIDTH-this.img.clientWidth)/2) + "px";
 	this.img.style.top = (g_HEIGHT-this.img.clientHeight-20) + "px";
+	
+	// Init eaten news
+	this.eatenNews = new Array();
+	for (var i=0; i<g_NEWS_COUNT; ++i)
+	{
+		this.eatenNews.push(false);
+	}
 }
 
 //------------------------------------------------------------------------------
 // Dude eat
-dude.prototype.eat = function(id)
+dude.prototype.eat = function(newsId)
 {
-	this.img.src = "dude_fail.png";
-	return false;
+	if (this.eatenNews[newsId] === true)
+	{
+		this.img.src = "dude_fail.png";
+		return false;
+	}
+	
+	this.eatenNews[newsId] = true;
+
+	var eatenNewsCount = 0;
+	for (var i=0; i<g_NEWS_COUNT; ++i)
+	{
+		if (this.eatenNews[i] === true)
+		{
+			++eatenNewsCount;
+		}
+	}
+	
+	if (eatenNewsCount == g_NEWS_COUNT)
+	{
+		this.img.src = "dude_win.png";
+	}
+	else if (eatenNewsCount > 0)
+	{
+		this.img.src = "dude_" + eatenNewsCount + ".png";
+	}
+	
+	return (eatenNewsCount < g_NEWS_COUNT);
 }
