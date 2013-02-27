@@ -110,5 +110,5 @@ gpe.prototype.update = function(dt)
 
 	// Update position
 	this.div.style.left = this.pos + "px";
-	this.div.style.top = "20px";		
+	this.div.style.top = "80px";		
 }
