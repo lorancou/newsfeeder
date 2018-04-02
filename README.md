@@ -5,7 +5,7 @@ Game entry for ~~MiniLD #40, theme: The Real World~~ February's 1GAM
 --------------------------------------------------------------------------------
 
 Copyright (c) 2013 Laurent Couvidou
-Contact: <lorancou@free.fr>
+Contact: <hello@lorancou.net>
 
 Playable here: http://lorancou.free.fr/bulk/newsfeeder/
 
